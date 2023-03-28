@@ -1,8 +1,9 @@
 const express = require("express");
 
 const app = express();
-const createConnection = require("./db.js");
+const createConnection = require("./db");
 const connection = createConnection();
+app.use(express.json());
 
 connection.connect((error) => {
   if (error) {
@@ -15,10 +16,10 @@ connection.connect((error) => {
 
 // Create a new user
 app.post("/users", (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-  const values = [name, email, password];
+  const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+  const values = [username, email, password];
 
   connection.query(sql, values, (error, result) => {
     if (error) {
@@ -57,10 +58,10 @@ app.get("/users/:id", (req, res) => {
 // Update a user by ID
 app.put("/users/:id", (req, res) => {
   const id = req.params.id;
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   const sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
-  const values = [name, email, password, id];
+  const values = [username, email, password, id];
 
   connection.query(sql, values, (error, result) => {
     if (error) {
@@ -100,8 +101,26 @@ app.delete("/users/:id", (req, res) => {
     res.send("User deleted successfully");
   });
 });
+connection.query(
+  `
+    CREATE TABLE IF NOT EXISTS users (
+      id INT NOT NULL AUTO_INCREMENT,
+      username VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      PRIMARY KEY (id)
+    );
+  `,
+  (error, results, fields) => {
+    if (error) {
+      console.error("Error creating users table:", error);
+    } else {
+      console.log("Users table created (if it didn't exist).");
+    }
+  }
+);
 
-const PORT = 3000;
+const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

@@ -9,7 +9,7 @@ const CreateUserPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("/api/users", {
+      const response = await axios.post("/users", {
         username,
         email,
         password,

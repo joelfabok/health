@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build
+build/
+dist/
+*.log
+*.pid
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies and Production Builds
+public/

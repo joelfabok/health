@@ -2,20 +2,24 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../css/index.css";
 
+import { useHistory } from "react-router-dom";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const history = useHistory();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post("/api/user", { email, password });
-      console.log(response.data);
-      // handle successful login
-    } catch (error) {
-      console.error(error);
-      // handle login error
-    }
+  const handleSubmit = () => {
+    axios
+      .post("/user", { email, password })
+      .then((response) => {
+        setMessage(response.data);
+        history.push("/signup"); // Navigate to dashboard page after successful sign-in
+      })
+      .catch((error) => {
+        setMessage(error.response.data);
+      });
   };
 
   return (
@@ -54,7 +58,7 @@ function Login() {
         <br />
         <button
           type="submit"
-          onsubmit="event.preventDefault();"
+          onClick={handleSubmit}
           class="group relative flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Login
@@ -62,7 +66,7 @@ function Login() {
         <div class="text-center pt-12 pb-12">
           <p>
             Don't have an account?{" "}
-            <a href="register.html" class="underline font-semibold">
+            <a href="" class="underline font-semibold">
               Register here.
             </a>
           </p>
