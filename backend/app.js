@@ -4,6 +4,9 @@ const app = express();
 const createConnection = require("./db");
 const connection = createConnection();
 app.use(express.json());
+const cors = require("cors");
+
+app.use(cors());
 
 connection.connect((error) => {
   if (error) {
@@ -13,7 +16,7 @@ connection.connect((error) => {
 
   console.log("Connected to MySQL database");
 });
-
+app.options("*", cors());
 // Create a new user
 app.post("/users", (req, res) => {
   const { username, email, password } = req.body;
@@ -60,7 +63,8 @@ app.put("/users/:id", (req, res) => {
   const id = req.params.id;
   const { username, email, password } = req.body;
 
-  const sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+  const sql =
+    "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
   const values = [username, email, password, id];
 
   connection.query(sql, values, (error, result) => {
@@ -119,6 +123,8 @@ connection.query(
     }
   }
 );
+
+const port = process.env.REACT_APP_SERVERPORT;
 
 const PORT = 8000;
 app.listen(PORT, () => {

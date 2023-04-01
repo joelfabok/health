@@ -1,29 +1,35 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-const CreateUserPage = () => {
+function SignUpForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (event) => {
+  function handleSubmit(event) {
     event.preventDefault();
-    try {
-      const response = await axios.post("/users", {
-        username,
-        email,
-        password,
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
+    const userData = {
+      username: username,
+      email: email,
+      password: password,
+    };
+
+    fetch("http://localhost:8000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="username">Username</label>
+        <label htmlFor="username">Username:</label>
         <input
           type="text"
           id="username"
@@ -32,7 +38,7 @@ const CreateUserPage = () => {
         />
       </div>
       <div>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">Email:</label>
         <input
           type="email"
           id="email"
@@ -41,7 +47,7 @@ const CreateUserPage = () => {
         />
       </div>
       <div>
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">Password:</label>
         <input
           type="password"
           id="password"
@@ -49,9 +55,9 @@ const CreateUserPage = () => {
           onChange={(event) => setPassword(event.target.value)}
         />
       </div>
-      <button type="submit">Create User</button>
+      <button type="submit">Sign Up</button>
     </form>
   );
-};
+}
 
-export default CreateUserPage;
+export default SignUpForm;
